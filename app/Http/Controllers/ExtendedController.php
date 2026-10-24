@@ -1,0 +1,12 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;use Illuminate\Support\Facades\DB;use Illuminate\Support\Str;
+use App\Services\GoldPricingService;
+class ExtendedController extends Controller {
+ public function adminFeatures(){return view('admin.features.index',['rate'=>DB::table('gold_rates')->latest('effective_at')->first(),'tickets'=>DB::table('support_tickets')->latest()->take(30)->get(),'customOrders'=>DB::table('custom_orders')->latest()->take(30)->get(),'alerts'=>DB::table('price_alerts')->where('is_active',true)->count()]);}
+ public function saveRate(Request $r){$d=$r->validate(['price_per_gram'=>'required|numeric|min:1','labor_percent'=>'required|numeric|min:0|max:300','profit_percent'=>'required|numeric|min:0|max:300','tax_percent'=>'required|numeric|min:0|max:100']);DB::table('gold_rates')->insert($d+['source'=>'admin','updated_by'=>$r->user()->id,'effective_at'=>now(),'created_at'=>now(),'updated_at'=>now()]);return back()->with('success','نرخ جدید ثبت شد؛ نرخ قبلی برای تاریخچه حفظ شد.');}
+ public function support(Request $r){$d=$r->validate(['subject'=>'required|string|max:150','message'=>'required|string|max:5000']);DB::table('support_tickets')->insert($d+['user_id'=>$r->user()->id,'status'=>'open','created_at'=>now(),'updated_at'=>now()]);return back()->with('success','درخواست پشتیبانی ثبت شد.');}
+ public function giftCard(Request $r){$d=$r->validate(['amount'=>'required|integer|min:100000|max:1000000000']);$code=strtoupper(Str::random(4).'-'.Str::random(4).'-'.Str::random(4));DB::table('gift_cards')->insert(['code'=>$code,'initial_amount'=>$d['amount'],'balance'=>$d['amount'],'purchased_by'=>$r->user()->id,'created_at'=>now(),'updated_at'=>now()]);return back()->with('success','کارت هدیه آزمایشی ایجاد شد: '.$code.' — تا زمان اتصال پرداخت، قابل فروش یا مصرف نیست.');}
+ public function engraving(Request $r){$d=$r->validate(['text'=>'required|string|max:24','font'=>'required|in:classic,modern,script']);return response()->json(['text'=>$d['text'],'font'=>$d['font'],'preview'=>'پیش‌نمایش متنی؛ رندر حکاکی روی مدل GLB باید به مدل سه‌بعدی متصل شود.']);}
+ public function newsletter(Request $r){$email=$r->validate(['email'=>'required|email:rfc,dns|max:190'])['email'];DB::table('newsletter_subscribers')->updateOrInsert(['email'=>strtolower(trim($email))],['subscribed_at'=>now(),'updated_at'=>now(),'created_at'=>now()]);return back()->with('success','ایمیل شما با موفقیت در خبرنامه ثبت شد.');}
+}

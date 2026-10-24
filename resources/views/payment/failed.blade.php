@@ -1,0 +1,1 @@
+@extends('layouts.app') @section('content')<section class="panel"><h1>پرداخت ناموفق یا لغو شد</h1><p>در صورت کسر وجه، وضعیت تراکنش را از طریق پشتیبانی درگاه پیگیری کنید.</p><a class="btn" href="{{ route('cart') }}">بازگشت به سبد</a></section>@endsection

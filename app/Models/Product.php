@@ -1,0 +1,3 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;
+class Product extends Model{protected $fillable=['category_id','name','slug','description','price','gold_weight_grams','gold_karat','stone_cost','labor_percent_override','stock','reserved_stock','model_path','image_path','is_active'];protected $casts=['price'=>'integer','gold_weight_grams'=>'decimal:3','stone_cost'=>'decimal:2','labor_percent_override'=>'decimal:2','is_active'=>'boolean'];public function category(){return $this->belongsTo(Category::class);}public function images(){return $this->hasMany(ProductImage::class);}public function reviews(){return $this->hasMany(Review::class);}}

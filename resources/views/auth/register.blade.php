@@ -1,0 +1,2 @@
+@extends('layouts.app')
+@section('content')<section class="card"><h1>ساخت حساب</h1><form method="post" action="{{ route('register.store') }}">@csrf<label>نام<input name="name" required maxlength="120"></label><label>ایمیل<input type="email" name="email" required></label><label>موبایل<input name="phone"></label><label>گذرواژه<input type="password" name="password" required minlength="8"></label><label>تکرار گذرواژه<input type="password" name="password_confirmation" required></label><button>ثبت‌نام</button></form></section>@endsection

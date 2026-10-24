@@ -1,0 +1,1 @@
+@extends('layouts.app') @section('content')<section class="panel"><h1>پرداخت تأیید شد</h1><p>شماره پیگیری: {{ session('ref_id','—') }}</p><a class="btn" href="{{ route('profile') }}">مشاهده سفارش‌ها</a></section>@endsection
